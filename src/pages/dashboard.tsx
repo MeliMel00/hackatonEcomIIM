@@ -24,6 +24,10 @@ function Dashboard() {
     router.push('/login');
   };
 
+  const goToAddProduct = () => {
+    router.push('/commerce/add-product');
+  };
+
   return (
     <>
       <Header />
@@ -41,6 +45,16 @@ function Dashboard() {
           Se déconnecter
         </button>
       </div>
+
+      <div>
+      <h1>Tableau de bord</h1>
+      <button 
+        className="bg-green-500 text-white p-2"
+        onClick={goToAddProduct}
+      >
+        Ajouter un produit
+      </button>
+    </div>
     </>
   );
 }

@@ -21,10 +21,6 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  const getImageUrl = (path: string) => {
-    return `https://kkgnyprkgaxrnwwvmnfh.supabase.co/storage/v1/object/public/${path}`;
-  };
-
   return (
     <><Header /><div className="max-w-3xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Produits Disponibles</h1>
@@ -32,7 +28,7 @@ export default function Home() {
         {products.map((product) => (
           <div key={product.id} className="border p-4 rounded-lg shadow-md">
             <img
-              src={getImageUrl(product.image_url)}
+              src={product.image_url}
               alt={product.name}
               className="w-full h-32 object-cover rounded" />
             <h2 className="text-lg font-semibold mt-2">{product.name}</h2>
