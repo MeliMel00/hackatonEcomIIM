@@ -1,17 +1,20 @@
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import supabase from '../lib/supabaseClient';
+import withAuth from '../lib/withAuth';
 
-export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
+function Dashboard() {
   const router = useRouter();
+  const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) router.push('/login');
-      else setUser(data.user);
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (user) {
+        setUserEmail(user.email);
+      }
     };
+
     fetchUser();
   }, []);
 
@@ -20,12 +23,16 @@ export default function Dashboard() {
     router.push('/login');
   };
 
-  if (!user) return <p>Chargement...</p>;
-
   return (
     <div className="max-w-md mx-auto p-4">
-      <h1 className="text-xl font-bold">Bienvenue, {user.email}</h1>
-      <button onClick={handleLogout} className="bg-red-500 text-white p-2 mt-4">Se déconnecter</button>
+      <h1 className="text-xl font-bold">
+        Bienvenue {userEmail} sur le tableau de bord
+      </h1>
+      <button onClick={handleLogout} className="bg-red-500 text-white p-2 mt-4">
+        Se déconnecter
+      </button>
     </div>
   );
 }
+
+export default withAuth(Dashboard);
