@@ -3,16 +3,18 @@ import { useEffect, useState } from 'react';
 import supabase from '../lib/supabaseClient';
 import withAuth from '../lib/withAuth';
 import Header from '@/components/header';
+import ProductList from '@/components/productList';
 
 function Dashboard() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (user) {
-        setUserEmail(user.email);
+        setUserId(user.id);
       }
     };
 
@@ -55,6 +57,11 @@ function Dashboard() {
         Ajouter un produit
       </button>
     </div>
+
+    <div className="max-w-4xl mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-4">Mes Produits</h1>
+        {userId ? <ProductList userId={userId} /> : <p>Chargement...</p>}
+      </div>
     </>
   );
 }

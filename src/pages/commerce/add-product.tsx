@@ -45,7 +45,7 @@ export default function AddProduct() {
     const imageUrl = publicUrlData?.publicUrl || '';
 
     // Ajouter le produit dans la table `products`
-    const { error } = await supabase.from('products').insert([
+    const { error } = await supabase.from('products').upsert([
       {
         name,
         description,
