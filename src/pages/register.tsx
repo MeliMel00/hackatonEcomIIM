@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import supabase from '../lib/supabaseClient';
 
@@ -6,38 +6,65 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [errorMessage, setErrorMessage] = useState(''); // Error message state
   const router = useRouter();
+
+  // Vérifier si l'utilisateur est déjà connecté
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // Si l'utilisateur est déjà connecté, rediriger vers la home
+        router.push('/');
+      } else {
+        setIsLoading(false); // Stop loading if no user is logged in
+      }
+    };
+    checkUser();
+  }, [router]);
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
 
-    // 1️⃣ Créer l'utilisateur avec Supabase Auth
+    // Créer l'utilisateur avec Supabase Auth
     const { data, error } = await supabase.auth.signUp({ email, password });
 
-    if (error) {
-      return alert(error.message);
+    if (error?.code === "user_already_exists") {
+      setErrorMessage("Cet utilisateur existe déjà");
+      return;
     }
 
-    // 2️⃣ L'utilisateur est maintenant connecté après l'inscription
+    if (error) {
+      setErrorMessage(error.message); // Set error message
+      return;
+    }
+
+    // L'utilisateur est maintenant connecté après l'inscription
     const user = data.user;
 
     if (!user) {
-      return alert('Erreur: utilisateur non trouvé après l\'inscription.');
+      setErrorMessage('Erreur: utilisateur non trouvé après l\'inscription.');
+      return;
     }
 
-    console.log(user)
-    // 3️⃣ Insérer l'utilisateur dans la table `users`
+    // Insérer l'utilisateur dans la table `users`
     const { error: dbError } = await supabase.from('users').upsert([
       { id: user.id, email: user.email, name: name },
     ]);
 
     if (dbError) {
-      return alert('Erreur lors de l\'ajout de l\'utilisateur dans la table `users`: ' + dbError.message);
+      setErrorMessage('Erreur lors de l\'ajout de l\'utilisateur dans la table `users`: ' + dbError.message);
+      return;
     }
 
-    // 4️⃣ Rediriger l'utilisateur vers la page du tableau de bord ou d'accueil
+    // Rediriger l'utilisateur vers la page du tableau de bord ou d'accueil
     router.push('/dashboard');
   };
+
+  if (isLoading) {
+    return <div>Chargement...</div>; // Show loading indicator
+  }
 
   return (
     <div className="max-w-md mx-auto p-4">
@@ -51,8 +78,8 @@ export default function Register() {
           className="border p-2"
         />
         <input 
-          type="name" 
-          placeholder="Name" 
+          type="text" 
+          placeholder="Nom" 
           value={name} 
           onChange={(e) => setName(e.target.value)} 
           className="border p-2"
@@ -68,6 +95,23 @@ export default function Register() {
           S'inscrire
         </button>
       </form>
+
+      {/* Display error message */}
+      {errorMessage && (
+        <div className="mt-4 text-red-500">
+          {errorMessage}
+        </div>
+      )}
+
+      {/* Bouton pour accéder à la page login */}
+      <div className="mt-4">
+        <button
+          className="text-blue-500 hover:underline"
+          onClick={() => router.push('/login')}
+        >
+          Vous avez déjà un compte ? Connectez-vous ici.
+        </button>
+      </div>
     </div>
   );
 }
