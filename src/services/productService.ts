@@ -1,5 +1,6 @@
 import supabase from '../lib/supabaseClient';
 import { Product } from '../models/Product';
+import { getCurrentUser } from '@/services/userService';
 
 /**
  * Ajoute un produit avec une image uploadée sur Supabase Storage.
@@ -10,10 +11,8 @@ export const addProduct = async (
   price: number, 
   image: File
 ) => {
-  // Vérifier si l'utilisateur est connecté
-  const { data } = await supabase.auth.getUser();
-  const user = data?.user;
-  
+  // Vérifier si l'utilisateur est connecté via UserService
+  const user = await getCurrentUser();
   if (!user) throw new Error("Vous devez être connecté");
 
   // Upload de l'image
@@ -27,16 +26,16 @@ export const addProduct = async (
   if (uploadError) throw new Error("Erreur lors du téléchargement de l'image");
 
   // Récupérer l'URL de l'image
-  const { data: publicUrlData } = await supabase
+  const { data: publicUrlData } = supabase
     .storage
     .from('productimage')
     .getPublicUrl(fileName);
   
-  const imageUrl = publicUrlData.publicUrl;
+  if (!publicUrlData.publicUrl) throw new Error("Erreur lors de la récupération de l'URL de l'image");
 
   // Ajouter le produit
   const { error } = await supabase.from('products').insert([
-    { name, description, price, image_url: imageUrl, user_id: user.id }
+    { name, description, price, image_url: publicUrlData.publicUrl, user_id: user.id }
   ]);
 
   if (error) throw new Error("Erreur lors de l'ajout du produit");
@@ -67,13 +66,16 @@ export const deleteProduct = async (productId: string) => {
   if (error) throw new Error("Erreur lors de la suppression du produit");
 };
 
+/**
+ * Récupère tous les produits disponibles.
+ */
 export const getAllProducts = async (): Promise<Product[]> => {
-    const { data, error } = await supabase.from('products').select('*');
-  
-    if (error) {
-      console.error("Erreur lors de la récupération des produits:", error);
-      throw new Error("Impossible de récupérer les produits.");
-    }
-  
-    return data;
-  };
+  const { data, error } = await supabase.from('products').select('*');
+
+  if (error) {
+    console.error("Erreur lors de la récupération des produits:", error);
+    throw new Error("Impossible de récupérer les produits.");
+  }
+
+  return data || [];
+};

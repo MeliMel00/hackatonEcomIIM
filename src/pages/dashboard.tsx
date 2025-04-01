@@ -1,21 +1,29 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import supabase from '../lib/supabaseClient';
 import withAuth from '../lib/withAuth';
 import Header from '@/components/header';
 import ProductList from '@/components/productList';
+import { getCurrentUser, logoutUser } from '@/services/userService';
 
 function Dashboard() {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
-  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
-      if (user) {
-        setUserId(user.id);
-        setUserEmail(user.email);
+      try {
+        const user = await getCurrentUser();
+        if (user) {
+          setUserId(user.id);
+          setUserEmail(user.email ?? null);
+        }
+      } catch (err) {
+        setError("Erreur lors de la récupération des informations utilisateur.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -23,8 +31,12 @@ function Dashboard() {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
+    try {
+      await logoutUser();
+      router.push('/login');
+    } catch (err) {
+      setError("Erreur lors de la déconnexion.");
+    }
   };
 
   const goToAddProduct = () => {

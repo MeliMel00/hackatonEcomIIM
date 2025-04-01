@@ -1,55 +1,52 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import supabase from '../lib/supabaseClient';
+import { loginUser, getCurrentUser } from '@/services/userService';
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // State for error message
-  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false); // État pour éviter le spam du bouton
   const router = useRouter();
 
   // Vérifier si l'utilisateur est déjà connecté
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        // Si l'utilisateur est déjà connecté, rediriger vers la home
-        router.push('/');
-      } else {
-        setIsLoading(false); // Stop loading if no user is logged in
+      try {
+        const user = await getCurrentUser();
+        if (user) {
+          toast.success("Déjà connecté, redirection...");
+          router.push('/');
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        setIsLoading(false);
       }
     };
     checkUser();
   }, [router]);
 
-  const handleLogin = async (e: any) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
-    // Clear previous error message
     setErrorMessage('');
+    setIsSubmitting(true);
 
-    // Connexion de l'utilisateur
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error?.code === "invalid_credentials") {
-      setErrorMessage("Identifiants de connexion invalides");
-      return;
+    try {
+      await loginUser(email, password);
+      toast.success("Connexion réussie !");
+      router.push('/');
+    } catch (error: any) {
+      setErrorMessage(error.message || "Erreur inconnue");
+      toast.error(error.message || "Erreur lors de la connexion");
+    } finally {
+      setIsSubmitting(false);
     }
-    if (error) {
-      setErrorMessage(error.message); // Set error message
-      return;
-    }
-
-    // Si la connexion est réussie, on redirige vers la page d'accueil
-    router.push('/');
   };
-
-  if (isLoading) {
-    return <div>Chargement...</div>; // Show loading indicator
-  }
 
   return (
     <div className="max-w-md mx-auto p-4">
