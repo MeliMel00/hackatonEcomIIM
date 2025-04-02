@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { registerUser } from '../services/userService';
 import supabase from '../lib/supabaseClient';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import Header from '@/components/header';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -29,7 +33,7 @@ export default function Register() {
 
     try {
       await registerUser(email, password, name);
-      router.push('/dashboard'); // Rediriger après une inscription réussie
+      router.push('/dashboard'); // Redirect after successful registration
     } catch (error: any) {
       setErrorMessage(error.message);
     }
@@ -40,48 +44,44 @@ export default function Register() {
   }
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-xl font-bold">Créer un compte</h1>
-      <form onSubmit={handleRegister} className="flex flex-col space-y-3">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Nom"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border p-2"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2"
-          required
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2">
-          S'inscrire
-        </button>
-      </form>
-
-      {errorMessage && <div className="mt-4 text-red-500">{errorMessage}</div>}
-
-      <div className="mt-4">
-        <button
-          className="text-blue-500 hover:underline"
-          onClick={() => router.push('/login')}
-        >
-          Vous avez déjà un compte ? Connectez-vous ici.
-        </button>
-      </div>
-    </div>
+    <>
+    <div className="flex justify-center items-center mt-24">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Créer un compte</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleRegister} className="space-y-4">
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required />
+            <Input
+              type="text"
+              placeholder="Nom"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required />
+            <Input
+              type="password"
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required />
+            <Button type="submit" className="w-full">
+              S'inscrire
+            </Button>
+          </form>
+          {errorMessage && <div className="mt-4 text-red-500">{errorMessage}</div>}
+        </CardContent>
+        <CardFooter className="flex justify-center">
+          <Button variant="link" onClick={() => router.push("/login")}>
+            Vous avez déjà un compte ? Connectez-vous ici.
+          </Button>
+        </CardFooter>
+      </Card>
+    </div></>
   );
 }

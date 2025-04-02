@@ -117,7 +117,6 @@ export const getAuthenticatedUser = async () => {
     const { data, error } = await supabase.auth.getUser();
   
     if (error) {
-      console.error("Erreur lors de la récupération de l'utilisateur:", error);
       return null;
     }
   
