@@ -27,7 +27,7 @@ function AddProduct() {
     }
 
     try {
-      await addProduct(name, description, parseFloat(price), image, quantity);
+      await addProduct(name, description, parseFloat(price), image, parseInt(quantity));
       router.push('/dashboard');
     } catch (error: any) {
       alert(error.message);
