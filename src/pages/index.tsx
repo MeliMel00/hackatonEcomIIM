@@ -1,12 +1,18 @@
-import { useEffect, useState } from 'react';
-import Header from '@/components/header';
-import { Product } from '@/models/Product';
-import { getAllProducts } from '@/services/productService';
+import { useEffect, useState } from "react";
+import Header from "@/components/header";
+import { Product } from "@/models/Product";
+import { getAllProducts } from "@/services/productService";
+import { useCart } from "@/contexts/CartContext";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { cart, addToCart } = useCart();
+
+  console.log("Cart actuel:", cart);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -26,27 +32,37 @@ export default function Home() {
   return (
     <>
       <Header />
-      <div className="max-w-5xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Produits Disponibles</h1>
+      <div className="max-w-6xl mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6 text-center">🛍️ Nos Produits</h1>
 
-        {loading && <p>Chargement des produits...</p>}
-        {error && <p className="text-red-500">{error}</p>}
+        {loading && <p className="text-center">Chargement des produits...</p>}
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {!loading && !error && products.length === 0 ? (
-            <p>Aucun produit trouvé.</p>
+            <p className="text-center col-span-3">Aucun produit trouvé.</p>
           ) : (
             products.map((product) => (
-              <div key={product.id} className="border p-4 rounded-lg shadow-sm">
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  className="w-full h-48 object-cover mb-4 rounded"
-                />
-                <h2 className="text-xl font-semibold">{product.name}</h2>
-                <p className="text-gray-600">{product.description || 'Pas de description disponible.'}</p>
-                <p className="text-green-500 mt-2 font-bold">Prix: {product.price} €</p>
-              </div>
+              <Card key={product.id} className="shadow-md">
+                <CardHeader>
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    className="w-full h-48 object-cover rounded-lg"
+                  />
+                </CardHeader>
+                <CardContent>
+                  <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
+                  <p className="text-gray-600 text-sm">{product.description || "Pas de description."}</p>
+                  <p className="text-green-500 font-bold mt-2">Prix: {product.price} €</p>
+                  <Button
+                    onClick={() => addToCart(product)}
+                    className="mt-3 w-full"
+                  >
+                    Ajouter au panier
+                  </Button>
+                </CardContent>
+              </Card>
             ))
           )}
         </div>

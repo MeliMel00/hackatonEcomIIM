@@ -1,46 +1,37 @@
-import { useEffect, useState } from "react";
-import { getCartItems, removeFromCart } from "@/services/cartService";
-import { useUser } from "@/hooks/useUser";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/header";
+import { useCart } from "@/contexts/CartContext";
+import { Product } from "@/models/Product";
 
-export default function Cart() {
-  const { user } = useUser();
-  const [cartItems, setCartItems] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (user) {
-      getCartItems(user.id).then(setCartItems);
-    }
-  }, [user]);
-
-  const handleRemove = async (cartItemId: string) => {
-    await removeFromCart(cartItemId);
-    setCartItems(cartItems.filter((item) => item.id !== cartItemId));
-  };
-
-  if (!user) return <p>Veuillez vous connecter pour voir votre panier.</p>;
+export default function CartPage() {
+  const { cart, removeFromCart } = useCart();
 
   return (
-    <><Header /><div className="p-4">
-          <h2 className="text-2xl font-bold mb-4">🛒 Mon Panier</h2>
-          {cartItems.length === 0 ? (
-              <p>Votre panier est vide.</p>
+    <><Header /><div className="max-w-6xl mx-auto p-6">
+          <h1 className="text-3xl font-bold mb-6 text-center">🛒 Votre Panier</h1>
+
+          {cart.length === 0 ? (
+              <p className="text-center">Votre panier est vide.</p>
           ) : (
-              cartItems.map((item) => (
-                  <Card key={item.id} className="mb-4">
-                      <CardContent className="flex justify-between items-center p-4">
-                          <div>
-                              <h3 className="font-semibold">{item.product.name}</h3>
-                              <p className="text-gray-600">Quantité: {item.quantity}</p>
-                          </div>
-                          <Button variant="destructive" onClick={() => handleRemove(item.id)}>
-                              Retirer
-                          </Button>
-                      </CardContent>
-                  </Card>
-              ))
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {cart.map((product: Product) => (
+                      <div key={product.id} className="border p-4 rounded-lg shadow-sm">
+                          <img
+                              src={product.image_url}
+                              alt={product.name}
+                              className="w-full h-48 object-cover rounded-lg mb-4" />
+                            <h2 className="text-xl font-semibold">{product.name}</h2>
+                            <p className="text-gray-600 text-sm">{product.description || "Pas de description."}</p>
+                            <p className="text-green-500 font-bold mt-2">Prix: {product.price} €</p>
+                            <p className="mt-2">Quantité: {product.quantity}</p>
+                            <button
+                              onClick={() => removeFromCart(product.id)}
+                              className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                          >
+                              Retirer du panier
+                          </button>
+                      </div>
+                  ))}
+              </div>
           )}
       </div></>
   );
