@@ -9,7 +9,8 @@ export const addProduct = async (
   name: string, 
   description: string, 
   price: number, 
-  image: File
+  image: File,
+  quantity: number
 ) => {
   // Vérifier si l'utilisateur est connecté via UserService
   const user = await getCurrentUser();
@@ -35,7 +36,7 @@ export const addProduct = async (
 
   // Ajouter le produit
   const { error } = await supabase.from('products').insert([
-    { name, description, price, image_url: publicUrlData.publicUrl, user_id: user.id }
+    { name, description, price, image_url: publicUrlData.publicUrl, user_id: user.id, quantity: quantity }
   ]);
 
   if (error) throw new Error("Erreur lors de l'ajout du produit");

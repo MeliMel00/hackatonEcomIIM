@@ -8,6 +8,7 @@ function AddProduct() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [quantity, setQuantity] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const router = useRouter();
 
@@ -26,7 +27,7 @@ function AddProduct() {
     }
 
     try {
-      await addProduct(name, description, parseFloat(price), image);
+      await addProduct(name, description, parseFloat(price), image, quantity);
       router.push('/dashboard');
     } catch (error: any) {
       alert(error.message);
@@ -57,6 +58,14 @@ function AddProduct() {
             placeholder="Prix"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
+            className="border p-2"
+          />
+          {/* quantity */}
+          <input
+            type="number"
+            placeholder="Quantité"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
             className="border p-2"
           />
           <input
