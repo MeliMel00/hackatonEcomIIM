@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { Button } from './ui/button';
 
 const Header = () => {
     const router = useRouter();
@@ -49,6 +50,13 @@ const Header = () => {
                     />
                 </svg>
             </div>
+            <Button
+                variant="outline"
+                className="text-gray-900 bg-white hover:bg-gray-200"
+                onClick={() => router.push("/cart")}
+            >
+                Voir le Panier
+            </Button>
         </header>
     );
 };
