@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getAuthenticatedUser } from '../services/userService';
 
-const withAuth = (WrappedComponent: any) => {
-  return (props: any) => {
-    const [user, setUser] = useState<any>(null);
+import { FC } from 'react';
+
+const withAuth = <P extends object>(WrappedComponent: FC<P>) => {
+  const AuthenticatedComponent: FC<P> = (props) => {
+    const [, setUser] = useState<object | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
@@ -26,10 +28,12 @@ const withAuth = (WrappedComponent: any) => {
 
     if (loading) return <p>Chargement...</p>;
 
-    if (!user) return null; // Éviter d'afficher le composant tant que l'utilisateur n'est pas défini
-
-    return <WrappedComponent {...props} />;
+    return <WrappedComponent {...(props as P)} />;
   };
+
+  AuthenticatedComponent.displayName = `withAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
+
+  return AuthenticatedComponent;
 };
 
 export default withAuth;

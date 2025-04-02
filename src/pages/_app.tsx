@@ -6,7 +6,9 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { UserProvider } from "@/contexts/UserContext";
 
-function MyApp({ Component, pageProps }: any) {
+import type { AppProps } from "next/app";
+
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <SessionContextProvider supabaseClient={supabase}>

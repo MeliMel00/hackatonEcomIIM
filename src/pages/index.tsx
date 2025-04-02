@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import Header from "@/components/header";
 import { Product } from "@/models/Product";
 import { getAllProducts } from "@/services/productService";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import Footer from "@/components/footer";
 import withAuth from "@/lib/withAuth";
+import Image from "next/image";
 
 function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,7 +20,7 @@ function Home() {
       try {
         const productsData = await getAllProducts();
         setProducts(productsData);
-      } catch (err: any) {
+      } catch {
         setError("Erreur lors du chargement des produits.");
       } finally {
         setLoading(false);
@@ -58,9 +57,11 @@ function Home() {
             products.map((product) => (
               <Card key={product.id} className="shadow-md">
                 <CardHeader>
-                  <img
+                  <Image
                     src={product.image_url}
                     alt={product.name}
+                    width={300}
+                    height={192}
                     className="w-full h-48 object-cover rounded-lg"
                   />
                 </CardHeader>
@@ -90,7 +91,7 @@ function Home() {
           <DialogHeader>
             <DialogTitle>Stock insuffisant</DialogTitle>
             <DialogDescription>
-              Vous ne pouvez pas ajouter plus d'unités de ce produit au panier.
+              Vous ne pouvez pas ajouter plus d&apos;unités de ce produit au panier.
             </DialogDescription>
           </DialogHeader>
           <Button onClick={() => setIsDialogOpen(false)} className="mt-4">

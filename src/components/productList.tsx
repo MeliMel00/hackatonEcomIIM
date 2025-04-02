@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { deleteProduct, getUserProducts } from '@/services/productService';
 import { Product } from '@/models/Product';
 import {
@@ -83,9 +84,11 @@ export default function ProductList({ userId }: ProductListProps) {
         ) : (
           products.map((product) => (
             <div key={product.id} className="border p-4 rounded-lg shadow-sm">
-              <img 
+              <Image 
                 src={product.image_url} 
                 alt={product.name} 
+                width={300} 
+                height={192} 
                 className="w-full h-48 object-cover mb-4 rounded"
               />
               <h2 className="text-xl font-semibold">{product.name}</h2>

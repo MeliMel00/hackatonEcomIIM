@@ -5,14 +5,13 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import Header from '@/components/header';
 import { useUser } from '@/contexts/UserContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { refreshUser } = useUser();
@@ -28,7 +27,7 @@ export default function Login() {
         } else {
           setIsLoading(false);
         }
-      } catch (error) {
+      } catch {
         setIsLoading(false);
       }
     };
@@ -47,9 +46,10 @@ export default function Login() {
       await refreshUser();
       toast.success("Connexion réussie !");
       router.push('/');
-    } catch (error: any) {
-      setErrorMessage(error.message || "Erreur inconnue");
-      toast.error(error.message || "Erreur lors de la connexion");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
+      setErrorMessage(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -87,7 +87,7 @@ export default function Login() {
             variant="link"
             onClick={() => router.push('/register')}
           >
-            Vous n'avez pas de compte ? Inscrivez-vous ici.
+            Vous n&apos;avez pas de compte ? Inscrivez-vous ici.
           </Button>
         </CardFooter>
       </Card>

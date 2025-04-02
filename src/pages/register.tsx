@@ -5,7 +5,7 @@ import supabase from '../lib/supabaseClient';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import Header from '@/components/header';
+import { useUser } from '@/contexts/UserContext';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -14,11 +14,13 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
+  const { refreshUser } = useUser();
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        
         router.push('/');
       } else {
         setIsLoading(false);
@@ -27,15 +29,20 @@ export default function Register() {
     checkUser();
   }, [router]);
 
-  const handleRegister = async (e: any) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage('');
 
     try {
       await registerUser(email, password, name);
-      router.push('/dashboard'); // Redirect after successful registration
-    } catch (error: any) {
-      setErrorMessage(error.message);
+      router.push('/');
+      await refreshUser();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('An unexpected error occurred.');
+      }
     }
   };
 
@@ -71,7 +78,7 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               required />
             <Button type="submit" className="w-full">
-              S'inscrire
+              S&#39;inscrire
             </Button>
           </form>
           {errorMessage && <div className="mt-4 text-red-500">{errorMessage}</div>}

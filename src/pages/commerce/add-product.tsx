@@ -29,8 +29,12 @@ function AddProduct() {
     try {
       await addProduct(name, description, parseFloat(price), image, parseInt(quantity));
       router.push('/dashboard');
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("An unknown error occurred.");
+      }
     }
   };
 

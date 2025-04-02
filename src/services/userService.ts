@@ -1,3 +1,4 @@
+import { User } from '@/models/User';
 import supabase from '../lib/supabaseClient';
 
 // Récupérer l'utilisateur actuellement connecté
@@ -35,7 +36,7 @@ export const getUserById = async (userId: string) => {
 };
 
 // Mettre à jour les informations d'un utilisateur
-export const updateUser = async (userId: string, updates: any) => {
+export const updateUser = async (userId: string, updates: User) => {
   const { error } = await supabase
     .from('users')
     .update(updates)

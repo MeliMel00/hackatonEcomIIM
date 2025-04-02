@@ -1,19 +1,18 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import withAuth from '../lib/withAuth';
-import Header from '@/components/header';
 import ProductList from '@/components/productList';
 import { getCurrentUser, logoutUser } from '@/services/userService';
-import Footer from '@/components/footer';
 import { useUser } from '@/contexts/UserContext';
 
 function Dashboard() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setLoading] = useState(true);
+  const [, setError] = useState<string | null>(null);
   const { logout } = useUser();
+  const [, setErrorMessage] = useState('');
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -22,8 +21,12 @@ function Dashboard() {
           setUserId(user.id);
           setUserEmail(user.email ?? null);
         }
-      } catch (err) {
-        setError("Erreur lors de la récupération des informations utilisateur.");
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+        } else {
+          setErrorMessage('An unexpected error occurred.');
+        }
       } finally {
         setLoading(false);
       }
@@ -37,7 +40,7 @@ function Dashboard() {
       await logoutUser();
       await logout();
       router.push('/login');
-    } catch (err) {
+    } catch {
       setError("Erreur lors de la déconnexion.");
     }
   };
