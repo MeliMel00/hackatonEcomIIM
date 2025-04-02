@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Footer from "@/components/footer";
+import withAuth from "@/lib/withAuth";
 
-export default function Home() {
+function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -100,3 +101,5 @@ export default function Home() {
     </>
   );
 }
+
+export default withAuth(Home);

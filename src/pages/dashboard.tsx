@@ -5,6 +5,7 @@ import Header from '@/components/header';
 import ProductList from '@/components/productList';
 import { getCurrentUser, logoutUser } from '@/services/userService';
 import Footer from '@/components/footer';
+import { useUser } from '@/contexts/UserContext';
 
 function Dashboard() {
   const router = useRouter();
@@ -12,7 +13,7 @@ function Dashboard() {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const { logout } = useUser();
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -34,6 +35,7 @@ function Dashboard() {
   const handleLogout = async () => {
     try {
       await logoutUser();
+      await logout();
       router.push('/login');
     } catch (err) {
       setError("Erreur lors de la déconnexion.");

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Header from '@/components/header';
+import { useUser } from '@/contexts/UserContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -14,6 +15,8 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { refreshUser } = useUser();
+
 
   useEffect(() => {
     const checkUser = async () => {
@@ -41,6 +44,7 @@ export default function Login() {
 
     try {
       await loginUser(email, password);
+      await refreshUser();
       toast.success("Connexion réussie !");
       router.push('/');
     } catch (error: any) {

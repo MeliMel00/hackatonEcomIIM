@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { addProduct } from '@/services/productService';
 import Header from '@/components/header';
+import withAuth from '@/lib/withAuth';
 
-export default function AddProduct() {
+function AddProduct() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -35,7 +36,7 @@ export default function AddProduct() {
   return (
     <>
       <Header />
-      <div className="max-w-md mx-auto p-4">
+      <div className="max-w-md mx-auto p-4 mt-24">
         <h1 className="text-xl font-bold">Ajouter un produit</h1>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
           <input
@@ -71,3 +72,5 @@ export default function AddProduct() {
     </>
   );
 }
+
+export default withAuth(AddProduct);
