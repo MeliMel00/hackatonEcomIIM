@@ -4,6 +4,7 @@ import withAuth from '../lib/withAuth';
 import Header from '@/components/header';
 import ProductList from '@/components/productList';
 import { getCurrentUser, logoutUser } from '@/services/userService';
+import Footer from '@/components/footer';
 
 function Dashboard() {
   const router = useRouter();
@@ -45,8 +46,7 @@ function Dashboard() {
 
   return (
     <>
-      <Header />
-      <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
+      <div className="mt-24 max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
           Bienvenue, <span className="text-blue-600">{userEmail || 'Utilisateur'}</span>!
         </h1>
@@ -55,16 +55,16 @@ function Dashboard() {
         </p>
         <div className="flex justify-between items-center mb-6">
           <button
-            onClick={goToAddProduct}
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition duration-300"
+        onClick={goToAddProduct}
+        className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition duration-300"
           >
-            Ajouter un produit
+        Ajouter un produit
           </button>
           <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded transition duration-300"
+        onClick={handleLogout}
+        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded transition duration-300"
           >
-            Se déconnecter
+        Se déconnecter
           </button>
         </div>
       </div>

@@ -2,16 +2,19 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { loginUser, getCurrentUser } from '@/services/userService';
 import { toast } from 'react-toastify';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import Header from '@/components/header';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false); // État pour éviter le spam du bouton
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  // Vérifier si l'utilisateur est déjà connecté
   useEffect(() => {
     const checkUser = async () => {
       try {
@@ -49,44 +52,41 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-xl font-bold">Se connecter</h1>
-      <form onSubmit={handleLogin} className="flex flex-col space-y-3">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2"
-        />
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2"
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2">
-          Se connecter
-        </button>
-      </form>
-
-      {/* Display error message */}
-      {errorMessage && (
-        <div className="mt-4 text-red-500">
-          {errorMessage}
-        </div>
-      )}
-
-      {/* Bouton pour accéder à la page d'inscription */}
-      <div className="mt-4">
-        <button
-          className="text-blue-500 hover:underline"
-          onClick={() => router.push('/register')}
-        >
-          Vous n'avez pas de compte ? Inscrivez-vous ici.
-        </button>
-      </div>
-    </div>
+    <>
+    <div className="flex justify-center items-center mt-24">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Se connecter</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} />
+            <Input
+              type="password"
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} />
+            {errorMessage && (
+              <div className="text-red-500 text-sm">{errorMessage}</div>
+            )}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Connexion...' : 'Se connecter'}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-center">
+          <Button
+            variant="link"
+            onClick={() => router.push('/register')}
+          >
+            Vous n'avez pas de compte ? Inscrivez-vous ici.
+          </Button>
+        </CardFooter>
+      </Card>
+    </div></>
   );
 }

@@ -6,6 +6,7 @@ import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import Footer from "@/components/footer";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -43,8 +44,7 @@ export default function Home() {
 
   return (
     <>
-      <Header />
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-6 mt-16">
         <h1 className="text-3xl font-bold mb-6 text-center">🛍️ Nos Produits</h1>
 
         {loading && <p className="text-center">Chargement des produits...</p>}
