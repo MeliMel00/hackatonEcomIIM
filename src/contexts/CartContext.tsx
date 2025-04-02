@@ -1,39 +1,64 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { Product } from "@/models/Product";
+import { createContext, useContext, useState } from 'react';
+import { Product } from '@/models/Product';
 
-// Création du context du panier
-const CartContext = createContext<any>(null);
+interface CartItem extends Product {
+  quantity: number;
+}
 
-export const CartProvider = ({ children }: any) => {
-  const [cart, setCart] = useState<Product[]>([]);
+interface CartContextType {
+  cart: CartItem[];
+  addToCart: (product: Product) => void;
+  removeFromCart: (productId: string) => void;
+}
 
-  useEffect(() => {
-    // Récupérer le panier depuis localStorage au démarrage
-    const savedCart = sessionStorage.getItem("cart");
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  }, []);
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-  useEffect(() => {
-    // Mettre à jour le panier dans localStorage chaque fois qu'il change
-    if (cart.length > 0) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart]);
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};
 
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Ajouter un produit au panier
   const addToCart = (product: Product) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
+    // Vérifier si la quantité demandée est disponible en stock
+    const availableStock = product.quantity; 
+    const existingItem = cart.find((item) => item.id === product.id);
+
+    if (existingItem) {
+      // Si le produit existe déjà dans le panier, on vérifie la quantité
+      const newQuantity = existingItem.quantity + 1;
+
+      // Si la nouvelle quantité dépasse le stock, on ne fait rien
+      if (newQuantity > availableStock) {
+        alert('La quantité demandée dépasse le stock disponible.');
+        return;
       }
-      return [...prevCart, { ...product, quantity: 1 }];
-    });
+
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item.id === product.id ? { ...item, quantity: newQuantity } : item
+        )
+      );
+    } else {
+      // Ajouter un nouveau produit si ce n'est pas déjà dans le panier
+      if (availableStock > 0) {
+        setCart((prevCart) => [
+          ...prevCart,
+          { ...product, quantity: 1 }
+        ]);
+      } else {
+        alert('Ce produit est en rupture de stock.');
+      }
+    }
   };
 
+  // Supprimer un produit du panier
   const removeFromCart = (productId: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
@@ -43,12 +68,4 @@ export const CartProvider = ({ children }: any) => {
       {children}
     </CartContext.Provider>
   );
-};
-
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  return context;
 };

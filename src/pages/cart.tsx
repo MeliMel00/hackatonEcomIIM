@@ -18,14 +18,14 @@ export default function CartPage() {
                           <img
                               src={product.image_url}
                               alt={product.name}
-                              className="w-full h-48 object-cover rounded-lg mb-4" />
-                            <h2 className="text-xl font-semibold">{product.name}</h2>
-                            <p className="text-gray-600 text-sm">{product.description || "Pas de description."}</p>
-                            <p className="text-green-500 font-bold mt-2">Prix: {product.price} €</p>
-                            <p className="mt-2">Quantité: {product.quantity}</p>
-                            <button
+                              className="w-full h-48 object-cover rounded-lg" />
+                          <h2 className="text-xl font-semibold">{product.name}</h2>
+                          <p className="text-gray-600 text-sm">{product.description || "Pas de description."}</p>
+                          <p className="text-green-500 font-bold mt-2">Prix: {product.price} €</p>
+                          <p className="mt-2">Quantité: {product.quantity}</p>
+                          <button
                               onClick={() => removeFromCart(product.id)}
-                              className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                              className="mt-3 w-full bg-red-500 text-white py-2 px-4 rounded"
                           >
                               Retirer du panier
                           </button>

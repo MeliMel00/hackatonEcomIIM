@@ -5,14 +5,14 @@ import { getAllProducts } from "@/services/productService";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { cart, addToCart } = useCart();
-
-  console.log("Cart actuel:", cart);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -28,6 +28,18 @@ export default function Home() {
 
     fetchProducts();
   }, []);
+
+  // Function to handle adding a product to the cart with stock verification
+  const handleAddToCart = (product: Product) => {
+    const productInCart = cart.find((item) => item.id === product.id);
+    const quantityInCart = productInCart ? productInCart.quantity : 0;
+
+    if (quantityInCart < product.quantity) {
+      addToCart(product);
+    } else {
+      setIsDialogOpen(true);
+    }
+  };
 
   return (
     <>
@@ -55,11 +67,14 @@ export default function Home() {
                   <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
                   <p className="text-gray-600 text-sm">{product.description || "Pas de description."}</p>
                   <p className="text-green-500 font-bold mt-2">Prix: {product.price} €</p>
+                  <p className="text-red-500 mt-2 font-bold">Stock disponible: {product.quantity}</p>
+
                   <Button
-                    onClick={() => addToCart(product)}
+                    onClick={() => handleAddToCart(product)}
                     className="mt-3 w-full"
+                    disabled={product.quantity === 0}
                   >
-                    Ajouter au panier
+                    {product.quantity > 0 ? "Ajouter au panier" : "Stock épuisé"}
                   </Button>
                 </CardContent>
               </Card>
@@ -67,6 +82,21 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* Dialog for insufficient stock */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Stock insuffisant</DialogTitle>
+            <DialogDescription>
+              Vous ne pouvez pas ajouter plus d'unités de ce produit au panier.
+            </DialogDescription>
+          </DialogHeader>
+          <Button onClick={() => setIsDialogOpen(false)} className="mt-4">
+            Fermer
+          </Button>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
