@@ -1,10 +1,11 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { getCurrentUser, logoutUser } from '@/services/userService';
+import { User } from '@supabase/supabase-js';
 
 interface UserContextType {
-  user: any;
+  user: User | null;
   loading: boolean;
-  setUser: (user: any) => void;
+  setUser: (user: User | null) => void;
   refreshUser: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -20,7 +21,7 @@ export const useUser = () => {
 };
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchUser = async () => {

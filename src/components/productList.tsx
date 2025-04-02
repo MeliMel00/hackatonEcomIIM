@@ -10,7 +10,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 interface ProductListProps {
@@ -27,20 +26,25 @@ export default function ProductList({ userId }: ProductListProps) {
   useEffect(() => {
     const fetchProducts = async () => {
       if (!userId) return;
-
+  
       try {
         const productsData = await getUserProducts(userId);
         setProducts(productsData);
-      } catch (err: any) {
-        console.error('Erreur lors de la récupération des produits:', err);
-        setError("Impossible de récupérer les produits.");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('Erreur lors de la récupération des produits:', err.message);
+          setError("Impossible de récupérer les produits.");
+        } else {
+          console.error('Erreur inconnue:', err);
+          setError("Impossible de récupérer les produits.");
+        }
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchProducts();
-  }, [userId]);
+  }, [userId]);  
 
   const handleDeleteConfirm = async () => {
     if (!productToDelete) return;
@@ -50,11 +54,18 @@ export default function ProductList({ userId }: ProductListProps) {
       // Mise à jour de l'état local pour filtrer le produit supprimé
       setProducts(products.filter(product => product.id !== productToDelete));
       setProductToDelete(null);
-    } catch (err: any) {
-      console.error('Erreur lors de la suppression du produit:', err);
-      setError("Impossible de supprimer le produit.");
+    } catch (err: unknown) { // Utilisation du type `unknown` ici
+      if (err instanceof Error) { // Vérification que `err` est une instance de `Error`
+        console.error('Erreur lors de la suppression du produit:', err.message); // Accès à `err.message` pour l'erreur
+        setError("Impossible de supprimer le produit.");
+      } else {
+        // Cas où l'erreur n'est pas une instance de `Error`
+        console.error('Erreur inconnue:', err);
+        setError("Impossible de supprimer le produit.");
+      }
     }
   };
+  
 
   const openDeleteDialog = (productId: string) => {
     setProductToDelete(productId);
