@@ -1,40 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 🚀 E-Commerce Starter Template  
 
-## Getting Started
+Un template moderne et évolutif pour créer des sites eCommerce rapidement avec **Next.js, Supabase et Vercel**.  
 
-First, run the development server:
+🔗 **Démo live** : [Voir le site](https://hackaton-ecom-iim-scqp-iz9c2ucn9-melimel00s-projects.vercel.app/)  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 📌 Fonctionnalités  
+
+✅ **Authentification avec Supabase** (Register/Login)  
+✅ **Gestion des produits** (Ajout, affichage, suppression)  
+✅ **Panier dynamique** (Ajout/suppression d’articles)  
+✅ **Déploiement CI/CD avec GitHub Actions & Vercel**  
+✅ **Base de données PostgreSQL sur Supabase**  
+✅ **Performance & SEO optimisés avec Next.js**  
+
+---
+
+## 🛠️ Stack technique  
+
+- **[Next.js](https://nextjs.org/)** – Framework React pour des performances optimales  
+- **[Supabase](https://supabase.com/)** – Backend as a Service (Auth, DB, Storage)  
+- **[Vercel](https://vercel.com/)** – Hébergement et déploiement serverless  
+- **[Tailwind CSS](https://tailwindcss.com/)** – Design rapide et responsive  
+- **[TypeScript](https://www.typescriptlang.org/)** – Sécurité et maintenabilité du code  
+
+---
+
+## 🚀 Installation & Configuration  
+
+### 1️⃣ **Cloner le projet**  
+```sh
+git clone https://github.com/ton-utilisateur/ton-repo.git
+cd ton-repo
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2️⃣ **Installer les dépendances**  
+```sh
+npm install
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### 3️⃣ **Configurer les variables d’environnement**  
+Créer un fichier `.env.local` à la racine et y ajouter :  
+```sh
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+⚠️ **Remplace par tes propres clés API Supabase !**  
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### 4️⃣ **Lancer le projet en local**  
+```sh
+npm run dev
+```
+Accéder au projet sur `http://localhost:3000`  
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📦 Déploiement  
 
-## Learn More
+### **Déploiement automatique avec Vercel**  
+Les pushs sur `main` déclenchent automatiquement un déploiement via **GitHub Actions**.  
 
-To learn more about Next.js, take a look at the following resources:
+### **Déploiement manuel**  
+```sh
+npx vercel --prod
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Contribution  
 
-## Deploy on Vercel
+💡 **Forker** le projet, créer une **branche**, faire un **commit** et ouvrir une **Pull Request**.  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+## 🔥 Auteurs  
+
+👤 **Melimel00**  
+🔗 GitHub : [Melimel00](https://github.com/Melimel00)  
+🔗 Démo : [hackaton-ecom](https://hackaton-ecom-iim-scqp-iz9c2ucn9-melimel00s-projects.vercel.app/)  
+
+---
+
+## 📜 Licence  
+Ce projet est sous **MIT License** – Libre de l'utiliser et de le modifier.  
