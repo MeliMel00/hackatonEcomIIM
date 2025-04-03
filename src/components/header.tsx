@@ -32,12 +32,12 @@ const Header = () => {
                 d="M3 12l9-9 9 9M4.5 10.5v9a1.5 1.5 0 001.5 1.5h3a1.5 1.5 0 001.5-1.5v-6h3v6a1.5 1.5 0 001.5 1.5h3a1.5 1.5 0 001.5-1.5v-9"
                 />
             </svg>
-            <span>ShopLogo</span>
+            {/* <span>No-name</span> */}
             </div>
 
             {/* Title (always centered) */}
             <h1 className="absolute left-1/2 transform -translate-x-1/2 text-2xl font-bold text-gray-900">
-            E-Commerce App
+           noName-ecomm
             </h1>
 
             {/* Right-side content */}
